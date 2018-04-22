@@ -18,6 +18,24 @@ Step 2. Add the dependency
 	        compile 'com.github.swuos:swu-mvc:1.0-beta'
 	}
 
+## 好处？ ##
+
+内置崩溃日志捕获。
+
+出现崩溃的时候往往很难找到错误日志，因为有时候app会直接被杀死，有时候是因为手机系统的问题。而这个库内置了崩溃捕获功能，当你处于debug模式的时候出现崩溃，app就会直接弹出崩溃页面让你看到错误日志。
+
+默认引入了bugly崩溃统计配置，只需要在application中重写setBuglyId方法就可以了，当然你需要继承JApp来配置你的App而不是继承Application
+
+## 一些约定 ##
+
+有些第三方框架需要在Application中初始化，但是由于JApp内部有一些自己的逻辑，所以我希望你能将这第三方框架的初始化放在initDependencies中去执行，不需要重写onCreate方法。至于initDependencies，则是在onCreate中的某一环节调用了，感兴趣的话可以看下源码吧
+
+## 全局数据管理器设计 ##
+
+app的onCreate中之所以做了很多处理，就是为了让BaseModel能发挥它的作用。你可以在initModels中去注册你的数据管理器，其将会成为一个app生命周期中的一个单例存在。用于跨页面间的数据交互是非常方便的。
+
+可以在activity或者baseModel已经baseFragment的子类中直接使用@Model注解获取，在其他地方的话可以使用App.getInstance().getModel(class)进行获取，也可以手动在构造器中调用ModelInjector.inject(this)，然后使用@Model注解
+
 ## 必须要求 ##
 
 由于仓库使用了java8版本编译，以便于支持lambda表达式。所以你的开发项目也要支持，配置如下。
