@@ -34,7 +34,7 @@ Step 2. Add the dependency
 
 app的onCreate中之所以做了很多处理，就是为了让BaseModel能发挥它的作用。你可以在initModels中去注册你的数据管理器，其将会成为一个app生命周期中的一个单例存在。用于跨页面间的数据交互是非常方便的。
 
-可以在activity或者baseModel已经baseFragment的子类中直接使用@Model注解获取，在其他地方的话可以使用App.getInstance().getModel(class)进行获取，也可以手动在构造器中调用ModelInjector.inject(this)，然后使用@Model注解
+可以在activity或者baseModel以及baseFragment的子类中直接使用@Model注解获取，在其他地方的话可以使用App.getInstance().getModel(class)进行获取，也可以手动在构造器中调用ModelInjector.inject(this)，然后使用@Model注解
 
 ## 必须要求 ##
 
