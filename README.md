@@ -72,3 +72,15 @@ Add it in your dev-module some like 'app.gradle' at the end of label 'android'.
 ### 网络请求库 ###
 
 使用方式，继承HttpRequester进行开发。具体实现可参考openswu-android
+
+## kotlin支持 ##
+
+我们当然支持kotlin，比如kotterknife（不懂的话去看下jakeWharton的kotterKnife吧），为其增加了自定义的simpleBaseAdapter的bindView支持。
+
+同样的，不建议在kotlin中使用@Model注解，毕竟反射机制消耗了那么一点点资源。你可以使用类似这样的代码获取
+	
+	private val stackModel by bindModel(StackModel::class.java)
+
+在任何地方都可以获取到StackModel的实例了
+
+> 懒加载在kotlin中还是很好用的
