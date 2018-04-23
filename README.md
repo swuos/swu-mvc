@@ -40,7 +40,7 @@ app的onCreate中之所以做了很多处理，就是为了让BaseModel能发挥
 
 由于仓库使用了java8版本编译，以便于支持lambda表达式。所以你的开发项目也要支持，配置如下。
 
-Add it in your dev-module some like 'app.gradle' at the end of label 'android'.
+Add it in your dev-module some like app's 'build.gradle' at the end of label 'android'.
 
 	android {
 	    compileSdkVersion 26
