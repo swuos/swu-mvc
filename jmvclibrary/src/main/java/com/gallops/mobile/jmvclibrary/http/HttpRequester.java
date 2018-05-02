@@ -2,6 +2,9 @@ package com.gallops.mobile.jmvclibrary.http;
 
 import android.support.annotation.NonNull;
 
+import com.gallops.mobile.jmvclibrary.http.requester.BaseCustomRequester;
+import com.gallops.mobile.jmvclibrary.http.requester.BaseRequester;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +13,7 @@ import org.json.JSONObject;
  * Created by wangyu on 2018/1/20.
  */
 
-public abstract class HttpRequester<T> extends BaseRequester {
+public abstract class HttpRequester<T> extends BaseCustomRequester {
 
     protected OnResultListener<T> listener;
 

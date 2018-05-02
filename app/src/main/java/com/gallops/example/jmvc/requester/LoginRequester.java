@@ -9,16 +9,22 @@ import com.gallops.mobile.jmvclibrary.http.HttpMethod;
 import com.gallops.mobile.jmvclibrary.http.HttpRequester;
 import com.gallops.mobile.jmvclibrary.http.OnResultListener;
 import com.gallops.mobile.jmvclibrary.http.RouteInterface;
+import com.gallops.mobile.jmvclibrary.http.requester.creator.BodyCreator;
+import com.gallops.mobile.jmvclibrary.http.requester.creator.FormBodyCreator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 /**
  * 登录请求
  * Created by wangyu on 2018/3/27.
  */
+@BodyCreator(FormBodyCreator.class)
 public class LoginRequester extends HttpRequester<JSONObject> {
 
     private String name;
@@ -33,6 +39,12 @@ public class LoginRequester extends HttpRequester<JSONObject> {
     @Override
     protected JSONObject onDumpData(@NonNull JSONObject jsonObject) throws JSONException {
         return jsonObject;
+    }
+
+    @Override
+    protected void onPutParams(Map<String, Object> params) {
+        params.put("username", name);
+        params.put("password", pwd);
     }
 
     @NonNull
@@ -52,10 +64,4 @@ public class LoginRequester extends HttpRequester<JSONObject> {
         return RouteEnum.ROUTE_LOGIN;
     }
 
-    @NonNull
-    @Override
-    protected FormBody.Builder onPutParams(@NonNull FormBody.Builder builder) {
-        return builder.add("username", name)
-                .add("password", pwd);
-    }
 }

@@ -7,5 +7,5 @@ package com.gallops.mobile.jmvclibrary.http;
 
 public abstract class HttpResultParser implements OnResultListener<String> {
 
-    abstract void onError(Exception e);
+    public abstract void onError(Exception e);
 }

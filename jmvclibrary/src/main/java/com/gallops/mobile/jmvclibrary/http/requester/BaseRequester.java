@@ -1,8 +1,13 @@
-package com.gallops.mobile.jmvclibrary.http;
+package com.gallops.mobile.jmvclibrary.http.requester;
 
 import android.support.annotation.NonNull;
 
 import com.gallops.mobile.jmvclibrary.app.JApp;
+import com.gallops.mobile.jmvclibrary.http.ApiInterface;
+import com.gallops.mobile.jmvclibrary.http.ErrorCode;
+import com.gallops.mobile.jmvclibrary.http.HttpMethod;
+import com.gallops.mobile.jmvclibrary.http.HttpResultParser;
+import com.gallops.mobile.jmvclibrary.http.RouteInterface;
 import com.gallops.mobile.jmvclibrary.models.HttpModel;
 import com.gallops.mobile.jmvclibrary.utils.Logger;
 
@@ -10,11 +15,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -50,7 +57,7 @@ public abstract class BaseRequester {
         }
 
         @Override
-        void onError(Exception e) {
+        public void onError(Exception e) {
             if (JApp.isDebug()) {//调试模式下打印web请求日志
                 String string = String.format(Locale.getDefault(), "response, logCode = %d, url = %s, error = %s", setRoute().getLogId(), setReqUrl(), e);
                 Logger.i(TAG, string);
@@ -67,14 +74,16 @@ public abstract class BaseRequester {
         HttpModel httpModel = getHttpModel();
         httpModel.getExecutor().execute(() -> {
             OkHttpClient client = new OkHttpClient();
-            FormBody.Builder builder = new FormBody.Builder();
+            Map<String, Object> params = new HashMap<>();
+            onPutParams(params);
+            RequestBody requestBody = onBuildRequestBody(params);
             Request.Builder reqBuilder = new Request.Builder()
                     .url(appendUrl(setReqUrl()))
-                    .method(setMethod().getMethod(), onPutParams(builder).build());
+                    .method(setMethod().getMethod(), requestBody);
             preHandleRequest(reqBuilder);
             Request request = reqBuilder.build();
             if (JApp.isDebug()) {
-                String string = String.format(Locale.getDefault(), "request, logCode = %d, url = %s", setRoute().getLogId(), setReqUrl() + "?" + logParams(builder.build()));
+                String string = String.format(Locale.getDefault(), "request, logCode = %d, url = %s", setRoute().getLogId(), setReqUrl() + "?" + logParams(params));
                 Logger.i(TAG, string);
             }
             try {
@@ -97,23 +106,26 @@ public abstract class BaseRequester {
         });
     }
 
+    @NonNull
+    protected abstract RequestBody onBuildRequestBody(Map<String, Object> params);
+
+    protected abstract void onPutParams(Map<String, Object> params);
+
     /**
      * 获取要打印的请求参数
      *
-     * @param body  表单
+     * @param params  表单
      * @return  拼接后的参数字符串
      */
-    private String logParams(FormBody body) {
+    protected String logParams(Map<String, Object> params) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < body.size(); i++) {
-            builder.append(body.name(i))
+        for (String key : params.keySet()) {
+            builder.append(key)
                     .append("=")
-                    .append(body.value(i))
+                    .append(params.get(key))
                     .append("&");
         }
-        String result = builder.toString();
-        if (result.endsWith("&")) result = result.substring(0, result.length() - 1);
-        return result;
+        return builder.toString();
     }
 
     /**
@@ -161,14 +173,6 @@ public abstract class BaseRequester {
      */
     @NonNull
     protected abstract RouteInterface setRoute();
-
-    /**
-     * 传入参数
-     *
-     * @return  {@link FormBody.Builder}
-     */
-    @NonNull
-    protected abstract FormBody.Builder onPutParams(@NonNull FormBody.Builder builder);
 
     /**
      * 统一解析请求的code码
