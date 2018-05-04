@@ -1,4 +1,4 @@
-package com.gallops.mobile.jmvclibrary.http.requester.creator;
+package com.gallops.mobile.jmvclibrary.http.creator;
 
 import org.json.JSONException;
 import org.json.JSONObject;

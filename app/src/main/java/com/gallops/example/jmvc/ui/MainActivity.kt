@@ -8,7 +8,6 @@ import com.gallops.mobile.jmvclibrary.app.BaseActivity
 import com.gallops.mobile.jmvclibrary.http.ErrorCode
 import com.gallops.mobile.jmvclibrary.http.OnResultListener
 import com.gallops.mobile.jmvclibrary.utils.kt.proxy.bindView
-import com.jianyuyouhun.inject.annotation.FindViewById
 
 class MainActivity : BaseActivity() {
 

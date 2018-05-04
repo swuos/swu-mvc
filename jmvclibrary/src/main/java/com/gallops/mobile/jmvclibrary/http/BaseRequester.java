@@ -1,13 +1,12 @@
-package com.gallops.mobile.jmvclibrary.http.requester;
+package com.gallops.mobile.jmvclibrary.http;
 
 import android.support.annotation.NonNull;
 
 import com.gallops.mobile.jmvclibrary.app.JApp;
-import com.gallops.mobile.jmvclibrary.http.ApiInterface;
-import com.gallops.mobile.jmvclibrary.http.ErrorCode;
-import com.gallops.mobile.jmvclibrary.http.HttpMethod;
-import com.gallops.mobile.jmvclibrary.http.HttpResultParser;
-import com.gallops.mobile.jmvclibrary.http.RouteInterface;
+import com.gallops.mobile.jmvclibrary.http.annotation.RequestMethod;
+import com.gallops.mobile.jmvclibrary.http.annotation.BodyCreator;
+import com.gallops.mobile.jmvclibrary.http.creator.FormBodyCreator;
+import com.gallops.mobile.jmvclibrary.http.creator.RequestBodyCreator;
 import com.gallops.mobile.jmvclibrary.models.HttpModel;
 import com.gallops.mobile.jmvclibrary.utils.Logger;
 
@@ -32,9 +31,16 @@ import static java.net.HttpURLConnection.HTTP_OK;
  * Created by wangyu on 2018/3/6.
  */
 
-public abstract class BaseRequester {
+@BodyCreator(FormBodyCreator.class)
+public abstract class BaseRequester<T> {
 
     private static final String TAG = "WEB";
+
+    protected OnResultListener<T> listener;
+
+    public BaseRequester(@NonNull OnResultListener<T> listener) {
+        this.listener = listener;
+    }
 
     private HttpResultParser httpResultParser = new HttpResultParser() {
         @Override
@@ -76,9 +82,19 @@ public abstract class BaseRequester {
             OkHttpClient client = new OkHttpClient();
             Map<String, Object> params = new HashMap<>();
             onPutParams(params);
-            RequestBody requestBody = onBuildRequestBody(params);
+            HttpMethod method = setMethod();
+            RequestBody requestBody = null;
+            String url = appendUrl(setReqUrl());
+            switch (method) {
+                case GET:
+                    url = appendGetParams(url, params);
+                    break;
+                case POST:
+                    requestBody = onBuildRequestBody(params);
+                    break;
+            }
             Request.Builder reqBuilder = new Request.Builder()
-                    .url(appendUrl(setReqUrl()))
+                    .url(url)
                     .method(setMethod().getMethod(), requestBody);
             preHandleRequest(reqBuilder);
             Request request = reqBuilder.build();
@@ -107,7 +123,42 @@ public abstract class BaseRequester {
     }
 
     @NonNull
-    protected abstract RequestBody onBuildRequestBody(Map<String, Object> params);
+    protected RequestBody onBuildRequestBody(Map<String, Object> params) {
+        RequestBody body = null;
+        Class<?> cls = this.getClass();
+        boolean hasFoundAnnotation = false;
+        while (cls != null && !hasFoundAnnotation) {
+            BodyCreator creator = cls.getAnnotation(BodyCreator.class);
+            if (creator == null) {
+                cls = cls.getSuperclass();
+                hasFoundAnnotation = false;
+            } else {
+                hasFoundAnnotation = true;
+                try {
+                    RequestBodyCreator requestBodyCreator = creator.value().newInstance();
+                    body = requestBodyCreator.onCreate(params);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        //noinspection ConstantConditions
+        return body;
+    }
+
+    private String appendGetParams(String url, Map<String, Object> params) {
+        StringBuilder builder = new StringBuilder();
+        for (String key : params.keySet()) {
+            builder.append(key)
+                    .append("=")
+                    .append(params.get(key))
+                    .append("&");
+        }
+        url = url + "?" + builder.toString();
+        return url;
+    }
 
     protected abstract void onPutParams(Map<String, Object> params);
 
@@ -153,7 +204,22 @@ public abstract class BaseRequester {
      * @return  {@link HttpMethod})
      */
     @NonNull
-    protected abstract HttpMethod setMethod();
+    protected HttpMethod setMethod() {
+        HttpMethod method = HttpMethod.GET;
+        Class<?> cls = this.getClass();
+        boolean hasFoundAnnotation = false;
+        while (cls != null && !hasFoundAnnotation) {
+            RequestMethod requestMethod = cls.getAnnotation(RequestMethod.class);
+            if (requestMethod == null) {
+                cls = cls.getSuperclass();
+                hasFoundAnnotation = false;
+            } else {
+                hasFoundAnnotation = true;
+                method = requestMethod.value();
+            }
+        }
+        return method;
+    }
 
     /**
      * 设置请求url
@@ -195,19 +261,31 @@ public abstract class BaseRequester {
     }
 
     /**
+     * 请求失败了
+     *
+     * @param exception 失败原因
+     */
+    protected void onError(Exception exception) {
+        exception.printStackTrace();
+        listener.onResult(OnResultListener.RESULT_NET_ERROR, null, exception.getMessage());
+    }
+
+
+    /**
      * 请求成功了  服务器已经返回结果
      *
      * @param code    请求成功的HTTP返回吗，，一般code等于200表示请求成功
      * @param content 从服务器获取到的数据
      */
-    protected abstract void onResult(int code, @NonNull JSONObject content, String msg) throws JSONException;
+    protected void onResult(int code, JSONObject content, String msg) throws JSONException {
+        T data = null;
+        if (code == OnResultListener.RESULT_DATA_OK) {
+            data = onDumpData(content);
+        }
+        listener.onResult(code, data, msg);
+    }
 
-    /**
-     * 请求失败了
-     *
-     * @param exception 失败原因
-     */
-    protected abstract void onError(Exception exception);
+    protected abstract T onDumpData(@NonNull JSONObject jsonObject) throws JSONException;
 
     /**
      * 获取http执行环境管理器

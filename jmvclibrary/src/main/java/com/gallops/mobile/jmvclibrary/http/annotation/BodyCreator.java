@@ -1,4 +1,6 @@
-package com.gallops.mobile.jmvclibrary.http.requester.creator;
+package com.gallops.mobile.jmvclibrary.http.annotation;
+
+import com.gallops.mobile.jmvclibrary.http.creator.RequestBodyCreator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
