@@ -11,4 +11,9 @@
             <enum name="circle" value="2"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="SimpleWebView">
+        <attr name="showProgress" format="boolean"/>
+        <attr name="progressDrawable" format="reference"/>
+    </declare-styleable>
 </resources>
