@@ -21,8 +21,6 @@ import java.util.Map;
  * Created by wangyu on 2018/3/27.
  */
 @Route(RouteEnum.ROUTE_LOGIN)
-@RequestMethod(HttpMethod.POST)
-@BodyCreator(FormBodyCreator.class)
 public class LoginRequester extends HttpRequester<JSONObject> {
 
     private String name;

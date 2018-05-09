@@ -1,28 +1,33 @@
 package com.gallops.example.jmvc.ui
 
+import android.content.Context
 import android.os.Bundle
-import android.widget.TextView
+import android.webkit.JavascriptInterface
 import com.gallops.example.jmvc.R
-import com.gallops.example.jmvc.requester.LoginRequester
 import com.gallops.mobile.jmvclibrary.app.BaseActivity
-import com.gallops.mobile.jmvclibrary.http.ErrorCode
-import com.gallops.mobile.jmvclibrary.http.OnResultListener
 import com.gallops.mobile.jmvclibrary.utils.kt.proxy.bindView
+import com.gallops.mobile.jmvclibrary.view.webview.JsInterface
+import com.gallops.mobile.jmvclibrary.view.webview.SimpleWebView
 
 class MainActivity : BaseActivity() {
 
-    private val textView by bindView<TextView>(R.id.textView)
+    private val webView by bindView<SimpleWebView>(R.id.webView)
 
     override fun getLayoutResId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        showProgressDialog()
-        LoginRequester("000000", "000000", OnResultListener { code, t, msg ->
-            dismissProgressDialog()
-            if (code == ErrorCode.RESULT_DATA_OK) {
-                textView.text = t.toString()
-            }
-        }).execute()
+        webView.setIsOpenJs(true, MyJsInterface(context))
+//        webView.loadWebUrl("file:///android_asset/test.html")
+        webView.loadWebUrl("http://172.16.2.218:8080/ioc/modules/report/1.html?reportId=1")
+//        webView.loadWebUrl("https://www.baidu.com")
+    }
+
+    class MyJsInterface(context : Context): JsInterface(context) {
+
+        @JavascriptInterface
+        fun getAppToken(): String {
+            return "asdasd"
+        }
     }
 }

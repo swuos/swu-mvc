@@ -1,5 +1,6 @@
 package com.gallops.example.jmvc.app;
 
+import com.gallops.example.jmvc.BuildConfig;
 import com.gallops.example.jmvc.api.WebApiImpl;
 import com.gallops.mobile.jmvclibrary.app.BaseModel;
 import com.gallops.mobile.jmvclibrary.app.JApp;
@@ -13,6 +14,11 @@ import java.util.List;
  */
 
 public class App extends JApp {
+    @Override
+    protected boolean setDebugMode() {
+        return BuildConfig.DEBUG;
+    }
+
     @Override
     protected String setBuglyId() {
         return super.setBuglyId();
