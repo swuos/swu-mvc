@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gallops.example.jmvc">
+    package="com.swuos.example.jmvc">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
