@@ -15,8 +15,20 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        compile 'com.github.swuos:swu-mvc:1.0-beta'
+	        compile 'com.github.swuos:swu-mvc:1.0'
 	}
+
+## 使用须知 ##
+
+**首先，请确认你的身份**
+
+1. 如果你是swu-client的开发者。由于后续存在可能的需求和接口变更，所以你需要结合本文档和swu-client源码进行消化。
+
+2. 如果你是其他开发者，那么使用本框架你可以选择直接compile或者下载源码两种方式。最有可能需要额外处理的部分则是http模块。具体改动可查看具体文档
+
+## 那么，可以上车了 ##
+
+### [车门在这](document/summary.md) ###
 
 ## 好处？ ##
 
