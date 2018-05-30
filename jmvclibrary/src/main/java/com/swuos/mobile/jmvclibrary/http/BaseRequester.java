@@ -79,7 +79,7 @@ public abstract class BaseRequester<T> {
     public void execute() {
         HttpModel httpModel = getHttpModel();
         httpModel.getExecutor().execute(() -> {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = httpModel.getOkHttpClient();
             Map<String, Object> params = new HashMap<>();
             onPutParams(params);
             HttpMethod method = setMethod();

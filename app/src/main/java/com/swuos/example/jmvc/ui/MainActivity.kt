@@ -18,9 +18,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         webView.setIsOpenJs(true, MyJsInterface(context))
-//        webView.loadWebUrl("file:///android_asset/test.html")
-        webView.loadWebUrl("http://172.16.2.218:8080/ioc/modules/report/1.html?reportId=1")
-//        webView.loadWebUrl("https://www.baidu.com")
+        webView.loadWebUrl("file:///android_asset/test.html")
     }
 
     class MyJsInterface(context : Context): JsInterface(context) {

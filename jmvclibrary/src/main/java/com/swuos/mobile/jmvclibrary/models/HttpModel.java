@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.OkHttpClient;
+
 /**
  *
  * Created by wangyu on 2018/3/27.
@@ -22,6 +24,7 @@ public class HttpModel extends BaseModel {
     private ExecutorService executorService;
     private Handler handler;
     private Map<String, ApiInterface> apiMap = new HashMap<>();
+    private OkHttpClient okHttpClient;
 
     @Override
     public void onModelCreate(Application application) {
@@ -44,6 +47,13 @@ public class HttpModel extends BaseModel {
 
     public final void clearApi() {
         apiMap.clear();
+    }
+
+    public synchronized OkHttpClient getOkHttpClient() {
+        if (okHttpClient == null) {
+            okHttpClient = new OkHttpClient();
+        }
+        return okHttpClient;
     }
 
     public ExecutorService getExecutor() {
