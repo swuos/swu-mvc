@@ -18,14 +18,22 @@
 
 #### 2、此MVC非彼MVC ####
 
-#### 3、JAPP ####
+#### 3、魔改Application类——JApp.java ####
 
-#### 4、http ####
+#### 4、okhttp的封装——http模块 ####
 
-#### 5、json处理 ####
+#### 5、接口字段对接——jsonUtil.java ####
 
-#### 6、injector ####
+#### 6、依赖注入设计——injector ####
 
 #### 7、其他开源库的使用 ####
 
 ### 三、kotlin使用扩展 ###
+
+kotlin那么火，所以我们也把它弄到了swu-client中。以及一些使用体验
+
+#### 1、kotterKnife以及扩展 ####
+
+#### 2、使用kotlin的理由 ####
+
+#### 3、拒绝kotlin的理由 ####
