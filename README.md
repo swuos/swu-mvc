@@ -26,6 +26,27 @@ Step 2. Add the dependency
 
 2. 如果你是其他开发者，那么使用本框架你可以选择直接compile或者下载源码两种方式。最有可能需要额外处理的部分则是http模块。具体改动可查看具体文档
 
+## 必须要求 ##
+
+由于仓库使用了java8版本编译，以便于支持lambda表达式。所以你的开发项目也要支持，配置如下。
+
+Add it in your dev-module some like app's 'build.gradle' at the end of label 'android'.
+
+	android {
+	    compileSdkVersion 26
+	
+		...
+	
+	    compileOptions {
+	        sourceCompatibility JavaVersion.VERSION_1_8
+	        targetCompatibility JavaVersion.VERSION_1_8
+	    }
+	}
+
+
+> 项目默认依赖了support-v7和recyclerview。
+
+
 ## 那么，可以上车了 ##
 
 ### [车门在这](document/Summary.md) ###
@@ -47,26 +68,6 @@ Step 2. Add the dependency
 app的onCreate中之所以做了很多处理，就是为了让BaseModel能发挥它的作用。你可以在initModels中去注册你的数据管理器，其将会成为一个app生命周期中的一个单例存在。用于跨页面间的数据交互是非常方便的。
 
 可以在activity或者baseModel以及baseFragment的子类中直接使用@Model注解获取，在其他地方的话可以使用App.getInstance().getModel(class)进行获取，也可以手动在构造器中调用ModelInjector.inject(this)，然后使用@Model注解
-
-## 必须要求 ##
-
-由于仓库使用了java8版本编译，以便于支持lambda表达式。所以你的开发项目也要支持，配置如下。
-
-Add it in your dev-module some like app's 'build.gradle' at the end of label 'android'.
-
-	android {
-	    compileSdkVersion 26
-	
-		...
-	
-	    compileOptions {
-	        sourceCompatibility JavaVersion.VERSION_1_8
-	        targetCompatibility JavaVersion.VERSION_1_8
-	    }
-	}
-
-
-> 项目默认依赖了support-v7和recyclerview。
 
 ## 集成模块 ##
 
