@@ -4,7 +4,7 @@
 第一步继承``HttpRequester``
 ```java
 @BodyCreator(JsonBodyCreator.class)
-public class QuickUseRequester extends BaseRequester {
+public class QuickUseRequester extends HttpRequester {
 
     public QuickUseRequester(@NonNull OnResultListener listener) {
         super(listener);
