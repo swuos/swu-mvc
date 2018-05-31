@@ -16,7 +16,7 @@
 
 #### [1、整体介绍](overall-mind.md) ####
 
-#### 2、此MVC非彼MVC ####
+#### [2、此MVC非彼MVC](mvc.md) ####
 
 #### 3、魔改Application类——JApp.java ####
 
